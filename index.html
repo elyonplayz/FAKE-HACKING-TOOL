@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER SECURITY TOOL v4.2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        
+        :root {
+            --hacker-green: #00ff00;
+            --hacker-red: #ff0033;
+            --hacker-blue: #0066ff;
+            --matrix-bg: #000000;
+        }
+        
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--matrix-bg);
+            color: var(--hacker-green);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            cursor: default;
+        }
+        
+        .matrix-text {
+            color: var(--hacker-green);
+            text-shadow: 0 0 5px var(--hacker-green);
+        }
+        
+        .red-text {
+            color: var(--hacker-red);
+            text-shadow: 0 0 5px var(--hacker-red);
+        }
+        
+        .blue-text {
+            color: var(--hacker-blue);
+            text-shadow: 0 0 5px var(--hacker-blue);
+        }
+        
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+        
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .progress-bar {
+            background-color: #111;
+            border: 1px solid var(--hacker-green);
+            height: 20px;
+            width: 100%;
+        }
+        
+        .progress-fill {
+            background-color: var(--hacker-green);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: rgba(0, 255, 0, 0.3);
+            animation: scan 8s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        .login-box {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--hacker-green);
+            box-shadow: 0 0 20px var(--hacker-green);
+        }
+        
+        .terminal-output {
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        
+        .terminal-output::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 0;
+            letter-spacing: 0.15em;
+        }
+        
+        .command-input {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            color: var(--hacker-green);
+            font-family: inherit;
+            width: 80%;
+        }
+        
+        .tool-button {
+            transition: all 0.3s;
+            border: 1px solid var(--hacker-green);
+        }
+        
+        .tool-button:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 10px var(--hacker-green);
+        }
+        
+        .glitch {
+            animation: glitch 1s linear infinite;
+        }
+        
+        @keyframes glitch {
+            0% {
+                text-shadow: 0.05em 0 0 #00fffc, -0.05em -0.025em 0 #fc00ff;
+            }
+            14% {
+                text-shadow: 0.05em 0 0 #00fffc, -0.05em -0.025em 0 #fc00ff;
+            }
+            15% {
+                text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.025em 0 #fc00ff;
+            }
+            49% {
+                text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.025em 0 #fc00ff;
+            }
+            50% {
+                text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00;
+            }
+            99% {
+                text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00;
+            }
+            100% {
+                text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.025em 0 #fc00ff;
+            }
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Login Screen -->
+    <div id="login-screen" class="fixed inset-0 flex items-center justify-center z-50">
+        <div class="login-box p-8 rounded-lg w-96">
+            <h1 class="text-3xl mb-6 text-center matrix-text">CYBER SECURITY TOOL v4.2</h1>
+            <p class="mb-4 matrix-text">SECURE ACCESS REQUIRED</p>
+            <div class="mb-4">
+                <label class="block matrix-text mb-2">USERNAME</label>
+                <input type="text" id="username" class="w-full p-2 bg-black border border-green-500 matrix-text" value="admin" readonly>
+            </div>
+            <div class="mb-6">
+                <label class="block matrix-text mb-2">PASSWORD</label>
+                <input type="password" id="password" class="w-full p-2 bg-black border border-green-500 matrix-text" placeholder="********">
+            </div>
+            <button id="login-btn" class="w-full py-2 bg-green-900 hover:bg-green-800 matrix-text font-bold">AUTHENTICATE</button>
+            <p class="text-xs mt-4 matrix-text text-center">WARNING: UNAUTHORIZED ACCESS WILL BE REPORTED</p>
+        </div>
+    </div>
+
+    <!-- Main Interface -->
+    <div id="main-interface" class="hidden h-screen flex flex-col p-4">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h1 class="text-xl matrix-text">CYBER SECURITY TOOL <span class="red-text">v4.2</span></h1>
+                <p class="text-xs matrix-text">SYSTEM STATUS: <span class="blue-text">SECURE</span> | USER: <span class="blue-text">admin</span> | ACCESS: <span class="blue-text">ROOT</span></p>
+            </div>
+            <div class="flex space-x-2">
+                <button id="panic-btn" class="px-4 py-1 red-text border border-red-500 hover:bg-red-900">PANIC</button>
+                <button id="clear-btn" class="px-4 py-1 matrix-text border border-green-500 hover:bg-green-900">CLEAR</button>
+            </div>
+        </div>
+
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Left Panel - Tools -->
+            <div class="w-1/4 pr-4 flex flex-col">
+                <h2 class="text-lg mb-2 matrix-text border-b border-green-500">TOOLS</h2>
+                <div class="space-y-2 overflow-y-auto flex-1">
+                    <button class="tool-button w-full p-2 matrix-text text-left" data-tool="wifi">BRUTE FORCE WIFI</button>
+                    <button class="tool-button w-full p-2 matrix-text text-left" data-tool="ddos">LAUNCH DDoS</button>
+                    <button class="tool-button w-full p-2 matrix-text text-left" data-tool="firewall">BYPASS FIREWALL</button>
+                    <button class="tool-button w-full p-2 matrix-text text-left" data-tool="decrypt">DECRYPT PASSWORDS</button>
+                    <button class="tool-button w-full p-2 matrix-text text-left" data-tool="satellite">ACCESS SATELLITE</button>
+                    <button class="tool-button w-full p-2 matrix-text text-left" data-tool="mainframe">SHUTDOWN MAINFRAME</button>
+                    <button class="tool-button w-full p-2 matrix-text text-left" data-tool="ipscan">IP SCANNER</button>
+                    <button class="tool-button w-full p-2 matrix-text text-left" data-tool="trace">TRACE ROUTE</button>
+                </div>
+                
+                <div class="mt-4">
+                    <h2 class="text-lg mb-2 matrix-text border-b border-green-500">IP SCAN FEED</h2>
+                    <div id="ip-feed" class="h-40 overflow-y-auto text-xs">
+                        <!-- IP addresses will be added here by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Terminal -->
+            <div class="flex-1 flex flex-col border border-green-500 bg-black bg-opacity-70">
+                <div id="terminal-output" class="terminal-output p-4 overflow-y-auto">
+                    <p class="matrix-text">SYSTEM INITIALIZED...</p>
+                    <p class="matrix-text">WELCOME, <span class="blue-text">ADMIN</span>.</p>
+                    <p class="matrix-text">TYPE <span class="blue-text">'help'</span> FOR COMMAND LIST.</p>
+                    <p class="matrix-text blink">_</p>
+                </div>
+                
+                <div class="p-4 border-t border-green-500 flex items-center">
+                    <span class="matrix-text mr-2">root@hacktool:~#</span>
+                    <input id="command-input" class="command-input flex-1" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panic Screen -->
+    <div id="panic-screen" class="hidden fixed inset-0 bg-white flex items-center justify-center z-50">
+        <div class="text-center p-8">
+            <h1 class="text-4xl font-bold mb-4">Windows Calculator</h1>
+            <div class="bg-gray-200 p-4 rounded-lg inline-block">
+                <div class="bg-white p-2 mb-2 text-right text-2xl font-mono">0</div>
+                <div class="grid grid-cols-4 gap-2">
+                    <button class="bg-gray-300 p-2">7</button>
+                    <button class="bg-gray-300 p-2">8</button>
+                    <button class="bg-gray-300 p-2">9</button>
+                    <button class="bg-gray-300 p-2">/</button>
+                    <button class="bg-gray-300 p-2">4</button>
+                    <button class="bg-gray-300 p-2">5</button>
+                    <button class="bg-gray-300 p-2">6</button>
+                    <button class="bg-gray-300 p-2">*</button>
+                    <button class="bg-gray-300 p-2">1</button>
+                    <button class="bg-gray-300 p-2">2</button>
+                    <button class="bg-gray-300 p-2">3</button>
+                    <button class="bg-gray-300 p-2">-</button>
+                    <button class="bg-gray-300 p-2">0</button>
+                    <button class="bg-gray-300 p-2">.</button>
+                    <button class="bg-gray-300 p-2">=</button>
+                    <button class="bg-gray-300 p-2">+</button>
+                </div>
+            </div>
+            <p class="mt-4 text-gray-600">Press ESC to return to hacking interface</p>
+        </div>
+    </div>
+
+    <!-- Scan Line Effect -->
+    <div class="scan-line"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const loginScreen = document.getElementById('login-screen');
+            const mainInterface = document.getElementById('main-interface');
+            const panicScreen = document.getElementById('panic-screen');
+            const loginBtn = document.getElementById('login-btn');
+            const panicBtn = document.getElementById('panic-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const terminalOutput = document.getElementById('terminal-output');
+            const commandInput = document.getElementById('command-input');
+            const ipFeed = document.getElementById('ip-feed');
+            const toolButtons = document.querySelectorAll('[data-tool]');
+            
+            // Fake IP addresses for the feed
+            const countries = ['USA', 'CHINA', 'RUSSIA', 'GERMANY', 'FRANCE', 'UK', 'JAPAN', 'BRAZIL', 'INDIA', 'AUSTRALIA'];
+            const fakeIPs = Array.from({length: 100}, () => {
+                const ip = `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+                const country = countries[Math.floor(Math.random() * countries.length)];
+                return {ip, country};
+            });
+            
+            // Commands and responses
+            const commands = {
+                help: {
+                    response: [
+                        'AVAILABLE COMMANDS:',
+                        'scan - Start network scan',
+                        'ddos [target] - Launch DDoS attack',
+                        'brute [target] - Brute force attack',
+                        'decrypt [file] - Decrypt password file',
+                        'satellite - Access satellite feed',
+                        'mainframe - Shutdown mainframe',
+                        'clear - Clear terminal',
+                        'help - Show this help'
+                    ]
+                },
+                scan: {
+                    response: [
+                        'INITIATING NETWORK SCAN...',
+                        'SCANNING SUBNET 192.168.1.0/24...',
+                        'FOUND 23 ACTIVE HOSTS',
+                        'VULNERABILITIES DETECTED: 7',
+                        'SCAN COMPLETE'
+                    ],
+                    delay: 50
+                },
+                ddos: {
+                    response: [
+                        'PREPARING DDoS PAYLOAD...',
+                        'DEPLOYING 1,024 ZOMBIE NODES...',
+                        'TARGET: ' + (Math.random() > 0.5 ? 'www.target.com' : '192.168.1.100'),
+                        'BANDWIDTH: ' + (Math.floor(Math.random() * 1000) + 500) + ' Mbps',
+                        'ATTACK IN PROGRESS...',
+                        'TARGET RESPONSE TIME INCREASING...',
+                        'DDoS SUCCESSFUL - TARGET OFFLINE'
+                    ],
+                    delay: 30
+                },
+                brute: {
+                    response: [
+                        'INITIATING BRUTE FORCE ATTACK...',
+                        'TARGET: ' + (Math.random() > 0.5 ? 'FTP Server' : 'SSH Service'),
+                        'LOADING WORDLIST... (12,482 ENTRIES)',
+                        'STARTING ATTACK...',
+                        'ATTEMPT 1: admin/password - FAILED',
+                        'ATTEMPT 23: admin/admin123 - FAILED',
+                        'ATTEMPT 147: admin/Password1 - FAILED',
+                        'ATTEMPT 892: admin/Summer2023! - SUCCESS',
+                        'ACCESS GRANTED - CREDENTIALS FOUND'
+                    ],
+                    delay: 40
+                },
+                decrypt: {
+                    response: [
+                        'LOADING ENCRYPTED FILE...',
+                        'DETECTED ENCRYPTION: AES-256',
+                        'INITIATING RAINBOW TABLE ATTACK...',
+                        'PROCESSING...',
+                        'MATCH FOUND IN 3,421,987th HASH',
+                        'DECRYPTION SUCCESSFUL!',
+                        'SAVING TO ./decrypted_passwords.txt'
+                    ],
+                    delay: 60
+                },
+                satellite: {
+                    response: [
+                        'ACCESSING SATELLITE FEED...',
+                        'CONNECTING TO GPS NETWORK...',
+                        'AUTHENTICATING...',
+                        'ACCESS GRANTED',
+                        'LATEST SATELLITE IMAGE:',
+                        'RESOLUTION: 0.5m/pixel',
+                        'COORDINATES: ' + (Math.random() * 180 - 90).toFixed(6) + ', ' + (Math.random() * 360 - 180).toFixed(6),
+                        'DOWNLOADING IMAGE...'
+                    ],
+                    delay: 70
+                },
+                mainframe: {
+                    response: [
+                        'WARNING: THIS WILL SHUTDOWN MAINFRAME',
+                        'ARE YOU SURE? (y/n)',
+                        'y',
+                        'INITIATING SHUTDOWN SEQUENCE...',
+                        'DISABLING SAFETY PROTOCOLS...',
+                        'SENDING TERMINATION CODE...',
+                        'MAINFRAME SHUTDOWN INITIATED',
+                        'ALL SYSTEMS OFFLINE IN 5...4...3...2...1...',
+                        'SHUTDOWN COMPLETE'
+                    ],
+                    delay: 80
+                }
+            };
+            
+            // Tools and their responses
+            const tools = {
+                wifi: {
+                    name: 'BRUTE FORCE WIFI',
+                    steps: [
+                        'SCANNING FOR WIFI NETWORKS...',
+                        'FOUND 3 NETWORKS:',
+                        '1. HomeWiFi (WPA2)',
+                        '2. FreePublicWiFi (OPEN)',
+                        '3. Neighbor (WPA2)',
+                        'SELECTING TARGET: HomeWiFi',
+                        'LOADING WORDLIST...',
+                        'STARTING BRUTE FORCE ATTACK...',
+                        'ATTEMPT 1: password - FAILED',
+                        'ATTEMPT 2: 12345678 - FAILED',
+                        'ATTEMPT 3: qwerty - FAILED',
+                        'ATTEMPT 42: mysecurepass - SUCCESS!',
+                        'WIFI PASSWORD CRACKED: mysecurepass',
+                        'CONNECTING TO NETWORK...',
+                        'ACCESS GRANTED'
+                    ]
+                },
+                ddos: {
+                    name: 'LAUNCH DDoS',
+                    steps: [
+                        'INITIALIZING BOTNET...',
+                        'CONNECTING TO 1,024 ZOMBIE NODES...',
+                        'TARGET: www.example.com',
+                        'PREPARING SYN FLOOD ATTACK...',
+                        'SENDING PAYLOAD...',
+                        'BANDWIDTH: 847 Mbps',
+                        'TARGET RESPONSE TIME: 5,284ms',
+                        'DDoS ATTACK SUCCESSFUL!',
+                        'TARGET IS NOW OFFLINE'
+                    ]
+                },
+                firewall: {
+                    name: 'BYPASS FIREWALL',
+                    steps: [
+                        'ANALYZING FIREWALL RULES...',
+                        'DETECTED: CISCO ASA FIREWALL',
+                        'SCANNING FOR OPEN PORTS...',
+                        'PORT 443 (HTTPS) - FILTERED',
+                        'PORT 22 (SSH) - FILTERED',
+                        'PORT 3389 (RDP) - OPEN',
+                        'EXPLOITING WEAKNESS IN RDP PROTOCOL...',
+                        'INJECTING MALICIOUS PACKETS...',
+                        'FIREWALL RULES BYPASSED!',
+                        'ACCESS TO INTERNAL NETWORK GRANTED'
+                    ]
+                },
+                decrypt: {
+                    name: 'DECRYPT PASSWORDS',
+                    steps: [
+                        'LOADING ENCRYPTED HASHES...',
+                        'DETECTED: SHA-256 HASHES',
+                        'PREPARING RAINBOW TABLE...',
+                        'STARTING DECRYPTION PROCESS...',
+                        'PROGRESS: [#####-----] 45%',
+                        'MATCH FOUND FOR HASH: 5e884898...',
+                        'DECRYPTED PASSWORD: password',
+                        'PROGRESS: [#########-] 90%',
+                        'DECRYPTION COMPLETE!',
+                        'SAVED TO: decrypted_passwords.txt'
+                    ]
+                },
+                satellite: {
+                    name: 'ACCESS SATELLITE',
+                    steps: [
+                        'CONNECTING TO SATELLITE NETWORK...',
+                        'AUTHENTICATING WITH STOLEN CREDENTIALS...',
+                        'ACCESS GRANTED TO GPS SYSTEM',
+                        'DOWNLOADING REAL-TIME IMAGERY...',
+                        'COORDINATES: 40.7128° N, 74.0060° W',
+                        'RESOLUTION: 0.3 METERS/PIXEL',
+                        'ZOOMING IN ON TARGET LOCATION...',
+                        'IMAGE CAPTURED AND SAVED',
+                        'SATELLITE ACCESS COMPLETE'
+                    ]
+                },
+                mainframe: {
+                    name: 'SHUTDOWN MAINFRAME',
+                    steps: [
+                        'WARNING: THIS ACTION IS IRREVERSIBLE',
+                        'CONNECTING TO MAINFRAME...',
+                        'AUTHENTICATING WITH ROOT ACCESS...',
+                        'DISABLING SAFETY PROTOCOLS...',
+                        'INITIATING SHUTDOWN SEQUENCE...',
+                        'MAINFRAME WILL BE OFFLINE IN 10 SECONDS',
+                        '9...8...7...6...5...4...3...2...1...',
+                        'MAINFRAME SHUTDOWN COMPLETE',
+                        'ALL SYSTEMS OFFLINE'
+                    ]
+                },
+                ipscan: {
+                    name: 'IP SCANNER',
+                    steps: [
+                        'INITIATING NETWORK SCAN...',
+                        'SCANNING RANGE: 192.168.1.1 - 192.168.1.255',
+                        'PROGRESS: [##--------] 20%',
+                        'FOUND DEVICES:',
+                        '192.168.1.1 - ROUTER',
+                        '192.168.1.2 - PRINTER',
+                        '192.168.1.5 - WORKSTATION (WINDOWS)',
+                        '192.168.1.10 - SERVER (LINUX)',
+                        'PROGRESS: [#######---] 70%',
+                        'SCAN COMPLETE - 4 DEVICES FOUND'
+                    ]
+                },
+                trace: {
+                    name: 'TRACE ROUTE',
+                    steps: [
+                        'TRACING ROUTE TO www.google.com...',
+                        '1 192.168.1.1 (1 ms)',
+                        '2 10.10.10.1 (5 ms)',
+                        '3 72.14.208.1 (12 ms)',
+                        '4 216.239.48.3 (18 ms)',
+                        '5 172.253.66.3 (22 ms)',
+                        'TRACE COMPLETE - 5 HOPS'
+                    ]
+                }
+            };
+            
+            // Login
+            loginBtn.addEventListener('click', function() {
+                // Fake authentication
+                const password = document.getElementById('password').value;
+                
+                // Type effect for "Authenticating..."
+                typeToTerminal('AUTHENTICATING...', 20, function() {
+                    setTimeout(function() {
+                        if (password.length > 0) {
+                            // Success
+                            typeToTerminal('ACCESS GRANTED', 20, function() {
+                                setTimeout(function() {
+                                    typeToTerminal('LOADING CYBER SECURITY TOOL v4.2...', 20, function() {
+                                        setTimeout(function() {
+                                            // Show main interface
+                                            loginScreen.classList.add('hidden');
+                                            mainInterface.classList.remove('hidden');
+                                            
+                                            // Start IP feed
+                                            updateIpFeed();
+                                            setInterval(updateIpFeed, 2000);
+                                            
+                                            // Focus command input
+                                            commandInput.focus();
+                                        }, 1000);
+                                    });
+                                }, 500);
+                            });
+                        } else {
+                            // No password entered
+                            typeToTerminal('ACCESS DENIED - NO PASSWORD PROVIDED', 20);
+                        }
+                    }, 1000);
+                });
+            });
+            
+            // Panic button
+            panicBtn.addEventListener('click', function() {
+                mainInterface.classList.add('hidden');
+                panicScreen.classList.remove('hidden');
+            });
+            
+            // Clear terminal
+            clearBtn.addEventListener('click', function() {
+                terminalOutput.innerHTML = '<p class="matrix-text">SYSTEM INITIALIZED...</p><p class="matrix-text blink">_</p>';
+            });
+            
+            // Command input
+            commandInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const command = commandInput.value.trim().toLowerCase();
+                    commandInput.value = '';
+                    
+                    // Add command to terminal
+                    addToTerminal(`root@hacktool:~# ${command}`);
+                    
+                    // Process command
+                    if (commands[command]) {
+                        // Command exists
+                        const response = commands[command].response;
+                        const delay = commands[command].delay || 30;
+                        
+                        if (Array.isArray(response)) {
+                            // Multiple lines
+                            response.forEach((line, index) => {
+                                setTimeout(() => {
+                                    addToTerminal(line);
+                                }, index * delay);
+                            });
+                        } else {
+                            // Single line
+                            setTimeout(() => {
+                                addToTerminal(response);
+                            }, delay);
+                        }
+                    } else if (command === 'clear') {
+                        // Clear terminal
+                        terminalOutput.innerHTML = '<p class="matrix-text blink">_</p>';
+                    } else if (command) {
+                        // Unknown command
+                        addToTerminal(`Command not found: ${command}`);
+                    }
+                    
+                    // Add blinking cursor
+                    setTimeout(() => {
+                        addToTerminal('<span class="blink">_</span>', false);
+                    }, 100);
+                }
+            });
+            
+            // Tool buttons
+            toolButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tool = this.getAttribute('data-tool');
+                    executeTool(tool);
+                });
+            });
+            
+            // Escape key for panic screen
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !panicScreen.classList.contains('hidden')) {
+                    panicScreen.classList.add('hidden');
+                    mainInterface.classList.remove('hidden');
+                    commandInput.focus();
+                }
+            });
+            
+            // Helper functions
+            function addToTerminal(text, isText = true) {
+                // Remove blinking cursor if exists
+                const blinkElements = terminalOutput.querySelectorAll('.blink');
+                blinkElements.forEach(el => el.remove());
+                
+                // Add new text
+                if (isText) {
+                    const p = document.createElement('p');
+                    p.className = 'matrix-text';
+                    p.innerHTML = text;
+                    terminalOutput.appendChild(p);
+                } else {
+                    // For HTML like blinking cursor
+                    terminalOutput.insertAdjacentHTML('beforeend', text);
+                }
+                
+                // Scroll to bottom
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
+            
+            function typeToTerminal(text, speed, callback) {
+                let i = 0;
+                const typing = setInterval(() => {
+                    if (i < text.length) {
+                        // Remove blinking cursor if exists
+                        const blinkElements = terminalOutput.querySelectorAll('.blink');
+                        blinkElements.forEach(el => el.remove());
+                        
+                        // Get last line or create new one
+                        let lastLine = terminalOutput.lastElementChild;
+                        if (!lastLine || !lastLine.classList.contains('matrix-text')) {
+                            lastLine = document.createElement('p');
+                            lastLine.className = 'matrix-text';
+                            terminalOutput.appendChild(lastLine);
+                        }
+                        
+                        // Add next character
+                        lastLine.textContent += text.charAt(i);
+                        i++;
+                        
+                        // Scroll to bottom
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    } else {
+                        clearInterval(typing);
+                        if (callback) callback();
+                    }
+                }, speed);
+            }
+            
+            function executeTool(tool) {
+                if (!tools[tool]) return;
+                
+                const toolData = tools[tool];
+                
+                // Add tool header
+                addToTerminal(`=== ${toolData.name} ===`);
+                
+                // Execute steps with delay
+                toolData.steps.forEach((step, index) => {
+                    setTimeout(() => {
+                        addToTerminal(step);
+                        
+                        // Add progress bar for certain tools
+                        if (tool === 'decrypt' && index === 3) {
+                            const progressBar = document.createElement('div');
+                            progressBar.className = 'progress-bar my-2';
+                            progressBar.innerHTML = '<div class="progress-fill" style="width: 45%"></div>';
+                            terminalOutput.appendChild(progressBar);
+                        } else if (tool === 'decrypt' && index === 7) {
+                            const progressBar = terminalOutput.querySelector('.progress-fill');
+                            if (progressBar) progressBar.style.width = '90%';
+                        } else if (tool === 'ipscan' && index === 2) {
+                            const progressBar = document.createElement('div');
+                            progressBar.className = 'progress-bar my-2';
+                            progressBar.innerHTML = '<div class="progress-fill" style="width: 20%"></div>';
+                            terminalOutput.appendChild(progressBar);
+                        } else if (tool === 'ipscan' && index === 6) {
+                            const progressBar = terminalOutput.querySelector('.progress-fill');
+                            if (progressBar) progressBar.style.width = '70%';
+                        }
+                        
+                        // Add blinking cursor at the end
+                        if (index === toolData.steps.length - 1) {
+                            setTimeout(() => {
+                                addToTerminal('<span class="blink">_</span>', false);
+                            }, 100);
+                        }
+                    }, index * 500);
+                });
+            }
+            
+            function updateIpFeed() {
+                // Clear feed
+                ipFeed.innerHTML = '';
+                
+                // Add random IPs
+                const count = Math.floor(Math.random() * 5) + 3;
+                const shuffledIPs = [...fakeIPs].sort(() => 0.5 - Math.random()).slice(0, count);
+                
+                shuffledIPs.forEach(ipData => {
+                    const p = document.createElement('p');
+                    p.className = 'matrix-text';
+                    p.textContent = `${ipData.ip} [${ipData.country}]`;
+                    ipFeed.appendChild(p);
+                });
+            }
+            
+            // Easter egg - Konami code
+            const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+            let konamiIndex = 0;
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === konamiCode[konamiIndex]) {
+                    konamiIndex++;
+                    
+                    if (konamiIndex === konamiCode.length) {
+                        // Konami code completed
+                        addToTerminal('<span class="glitch">SECRET DEVELOPER MODE ACTIVATED</span>');
+                        konamiIndex = 0;
+                        
+                        // Add some fun effects
+                        document.body.style.animation = 'glitch 0.5s infinite';
+                        setTimeout(() => {
+                            document.body.style.animation = '';
+                        }, 2000);
+                    }
+                } else {
+                    konamiIndex = 0;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
